@@ -37,3 +37,13 @@ Since the role/permission system is substituted with a user geolocation conditio
 
 **Lol at 2. point xD You really shouldn't write such a requirement... I could slap nextjs for the frontend with a minimal nestjs backend with clerk for authentication... you would see absolutely 0 skills that programmer can offer - you would see if he can use libraries... It raises my eyebrows quite a lot, since javascript land is filled with these libraries, and you can end up with next to 0 application logic - what are you testing then? If you can integrate 2-3 libraries? Chatgpt can do that for you... you're finding next to nothing from the developer your testing!**
 
+
+## Entity planning
+
+Ok usually I work with postgres - I could slap everything into a docker and just run it (mby I will - dunno)
+But for this use case... I'll just go with sqlite - I love sqlite for use cases like this - you just have a .db file - its so damn simpleeeee - sqlite is awesome if you're down for some ci/cd stuff as well - you literally just copy the .db file and poof you can test live data - mmmm perfection.
+
+![feel-good.png](assets/feel-good.png)
+
+Due to having previous experience with Prisma. I'll just use Prisma - its pretty ez setup and it abstracts the database layer which I don't like... but...
+
