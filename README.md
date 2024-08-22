@@ -23,6 +23,17 @@ Guards will probably be used for authentication - interesting - I thought I'll u
 
 > Guards are executed after all middleware, but before any interceptor or pipe.
 
-Interceptors similar to events design implementation?
+Interceptors similar to event listener design implementation?
 
-I guess not... looks like they can actually 
+## Lets start this
+
+Ok so after reading the test pdf again - if I clip out everything I can read that I'm supposed to save information about events.
+
+Not to save events - but to create some sort of config for the events that some app is logging... so scalability is really... not there in my mind for now.
+
+The other entity are users.
+
+Since the role/permission system is substituted with a user geolocation condition - I guess we can simplify the user entity.
+
+**Lol at 2. point xD You really shouldn't write such a requirement... I could slap nextjs for the frontend with a minimal nestjs backend with clerk for authentication... you would see absolutely 0 skills that programmer can offer - you would see if he can use libraries... It raises my eyebrows quite a lot, since javascript land is filled with these libraries, and you can end up with next to 0 application logic - what are you testing then? If you can integrate 2-3 libraries? Chatgpt can do that for you... you're finding next to nothing from the developer your testing!**
+
