@@ -47,3 +47,23 @@ But for this use case... I'll just go with sqlite - I love sqlite for use cases 
 
 Due to having previous experience with Prisma. I'll just use Prisma - its pretty ez setup and it abstracts the database layer which I don't like... but...
 
+
+Ok we have 2 entities.
+Users and Events.
+
+Since I am using sqlite I have some restrictions with database functionality. So we have limitation on event types and priorities.
+
+Priorities can be between 0-10.
+Types can be crosspromo, liveops, app and ads.
+
+Other fields are all required - I like to have my database handle field validation on top of application layer.
+
+```sqlite
+createdAt   DateTime  @default(now())
+updatedAt   DateTime  @updatedAt
+```
+
+for additional tracking of the data.
+Additionally, I added published information - so that when user creates the new event - it is not published by default.
+
+
