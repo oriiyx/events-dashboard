@@ -1,6 +1,7 @@
-import {Controller, Get, Post, Body, Patch, Param, Delete} from '@nestjs/common';
+import {Controller, Get, Post, Body, Patch, Param, Delete, UseGuards} from '@nestjs/common';
 import {UsersService} from './users.service';
 import { User as UserModel } from '@prisma/client';
+import {AuthGuard} from "../auth/auth.guard";
 
 @Controller('users')
 export class UsersController {
@@ -14,6 +15,7 @@ export class UsersController {
         return this.usersService.createUser(userData);
     }
 
+    @UseGuards(AuthGuard)
     @Get()
     findAll() {
         return this.usersService.users({});

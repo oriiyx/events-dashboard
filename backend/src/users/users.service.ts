@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import {BadRequestException, Injectable, NotAcceptableException} from '@nestjs/common';
 import {PrismaService} from '../prisma.service';
 import {Prisma, User} from '@prisma/client';
 
@@ -33,6 +33,16 @@ export class UsersService {
     }
 
     async createUser(data: Prisma.UserCreateInput): Promise<User> {
+        const user = this.prisma.user.findUnique({
+            where: {
+                email: data.email,
+            },
+        });
+
+        if (user !== null) {
+            throw new BadRequestException('User already exists');
+        }
+
         return this.prisma.user.create({
             data,
         });
