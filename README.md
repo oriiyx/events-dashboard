@@ -67,3 +67,7 @@ for additional tracking of the data.
 Additionally, I added published information - so that when user creates the new event - it is not published by default.
 
 
+### this is the point where I gave up the first time
+
+After coming back to the project after talking to Primož, I added authentication - following the nestjs documentation mostly - not funny buisness - I wanted to have JWT token generated.
+When I created a new user I wanted to have password hashed - I used bcrypt for that.

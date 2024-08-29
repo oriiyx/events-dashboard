@@ -1,6 +1,5 @@
 import {Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards, Request} from '@nestjs/common';
 import {AuthService} from "./auth.service";
-import {AuthGuard} from "./auth.guard";
 import {Public} from "./public";
 
 @Controller('auth')
@@ -20,10 +19,5 @@ export class AuthController {
     @Post('register')
     register(@Body() registerDto: Record<string, any>) {
         return this.authService.register(registerDto.email, registerDto.password, registerDto.name ? registerDto.name : '');
-    }
-
-    @Get('profile')
-    getProfile(@Request() req: any) {
-        return req.user;
     }
 }

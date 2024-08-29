@@ -1,6 +1,7 @@
-import {BadRequestException, Injectable, NotAcceptableException} from '@nestjs/common';
+import {BadRequestException, Injectable} from '@nestjs/common';
 import {PrismaService} from '../prisma.service';
 import {Prisma, User} from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -33,7 +34,7 @@ export class UsersService {
     }
 
     async createUser(data: Prisma.UserCreateInput): Promise<User> {
-        const user = this.prisma.user.findUnique({
+        const user = await this.prisma.user.findUnique({
             where: {
                 email: data.email,
             },
@@ -43,8 +44,17 @@ export class UsersService {
             throw new BadRequestException('User already exists');
         }
 
+        const password = await bcrypt.hash(data.password, 10);
+
+        const userInput = {
+            email: data.email,
+            name: data.name,
+            password: password,
+            Event: data.Event
+        } as Prisma.UserCreateInput;
+
         return this.prisma.user.create({
-            data,
+            data: userInput,
         });
     }
 

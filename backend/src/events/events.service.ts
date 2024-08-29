@@ -1,6 +1,7 @@
-import {Injectable} from '@nestjs/common';
+import {BadRequestException, Injectable} from '@nestjs/common';
 import {PrismaService} from '../prisma.service';
 import {Event, Prisma} from '@prisma/client';
+import {CreateEventDto, PatchEventDto} from "./dto/events.dto";
 
 @Injectable()
 export class EventsService {
@@ -32,20 +33,68 @@ export class EventsService {
         });
     }
 
-    async createEvent(data: Prisma.EventCreateInput): Promise<Event> {
+    async createEvent(data: CreateEventDto): Promise<Event> {
+        const eventType = await this.prisma.eventType.findUnique({
+            where: {name: data.type}
+        });
+
+        if (!eventType) {
+            throw new BadRequestException('Invalid event type');
+        }
+
+        const newEvent = {
+            name: data.name,
+            description: data.description,
+            priority: data.priority,
+            type: {
+                connect: {
+                    id: eventType.id,
+                }
+            },
+            user: {
+                connect: {id: data.userId}
+            },
+            published: data.published,
+            updatedAt: new Date(),
+            createdAt: new Date(),
+        } as Prisma.EventCreateInput;
+
         return this.prisma.event.create({
-            data,
+            data: newEvent,
         });
     }
 
     async updateEvent(params: {
         where: Prisma.EventWhereUniqueInput;
-        data: Prisma.EventUpdateInput;
+        data: PatchEventDto;
     }): Promise<Event> {
         const {data, where} = params;
+        const eventType = await this.prisma.eventType.findUnique({
+            where: {name: data.type}
+        });
+
+        if (!eventType) {
+            throw new BadRequestException('Invalid event type');
+        }
+        const eventUpdateData = {
+            name: data.name,
+            description: data.description,
+            priority: data.priority,
+            type: {
+                connect: {
+                    id: eventType.id,
+                }
+            },
+            user: {
+                connect: {id: data.userId}
+            },
+            published: data.published,
+            updatedAt: new Date(),
+        } as Prisma.EventCreateInput;
+
         return this.prisma.event.update({
-            data,
-            where,
+            data: eventUpdateData,
+            where: where,
         });
     }
 

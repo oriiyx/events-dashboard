@@ -37,6 +37,6 @@ model Event {
 
 model EventType {
   id    Int     @id @default(autoincrement())
-  name  String
+  name  String  @unique
   Event Event[]
 }
