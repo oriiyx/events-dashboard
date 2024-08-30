@@ -1,0 +1,84 @@
+import {useState} from 'react'
+import {useForm} from 'react-hook-form'
+import {zodResolver} from '@hookform/resolvers/zod'
+import * as z from 'zod'
+import {login} from './lib/auth'
+import {useNavigate} from 'react-router-dom'
+import {Button} from "@/components/ui/button"
+import {Input} from "@/components/ui/input"
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form"
+import Header from "@/components/header.tsx";
+
+const loginSchema = z.object({
+    email: z.string().email('Invalid email'),
+    password: z.string().min(1, 'Enter password'),
+})
+
+export default function Login() {
+    const form = useForm<z.infer<typeof loginSchema>>({
+        resolver: zodResolver(loginSchema),
+        defaultValues: {
+            email: "",
+            password: "",
+        },
+    })
+
+    const [error, setError] = useState<string | null>(null)
+    const navigate = useNavigate()
+
+    const onSubmit = async (data: z.infer<typeof loginSchema>) => {
+        try {
+            await login(data.email, data.password)
+            navigate('/dashboard')
+        } catch (err) {
+            setError('Login failed. Please check your credentials.')
+        }
+    }
+
+    return (
+        <div className="min-h-screen bg-black text-green-400 p-4 font-mono">
+            <Header/>
+            <div className="container mx-auto max-w-md">
+                <h1 className="text-4xl font-bold mb-8 text-center animate-pulse">Login</h1>
+                <div className="border-4 border-green-400 p-8 rounded-lg shadow-lg shadow-green-400/50">
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                            <FormField
+                                control={form.control}
+                                name="email"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>Email</FormLabel>
+                                        <FormControl>
+                                            <Input {...field} className="bg-green-900 text-white border-2 border-green-400"/>
+                                        </FormControl>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="password"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>Password</FormLabel>
+                                        <FormControl>
+                                            <Input type="password" {...field}
+                                                   className="bg-green-900 text-white border-2 border-green-400"/>
+                                        </FormControl>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+                            {error && <div className="text-red-500">{error}</div>}
+                            <Button type="submit"
+                                    className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-none border-2 border-white">
+                                Login
+                            </Button>
+                        </form>
+                    </Form>
+                </div>
+            </div>
+        </div>
+    )
+}

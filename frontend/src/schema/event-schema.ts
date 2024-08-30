@@ -1,14 +1,5 @@
 // src/schemas/eventSchema.ts
-import { z } from 'zod';
-import axios from 'axios';
-import config from '../config';
-import axiom from '@axiomhq/axiom-node';
-
-// Initialize Axiom client (adjust with your Axiom API key/configuration)
-const client = axiom.createClient({
-    token: process.env.AXIOM_TOKEN,
-    orgId: process.env.AXIOM_ORG_ID,
-});
+import {z} from 'zod';
 
 export const eventSchema = z.object({
     id: z.number().optional(), // ID might be optional for new events
@@ -27,12 +18,5 @@ export type Event = z.infer<typeof eventSchema>;
 
 // Use Axiom for logging and observability
 export async function logEvent(event: Event) {
-    try {
-        await client.ingest({
-            dataset: 'events',
-            events: [event],
-        });
-    } catch (error) {
-        console.error('Failed to log event:', error);
-    }
+    console.log("Event logged", event);
 }

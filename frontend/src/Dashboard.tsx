@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react'
-import { Button } from "@/components/ui/button"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
-import { useToast } from "@/components/ui/use-toast"
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
+import {useEffect, useState} from 'react'
+import {Button} from "@/components/ui/button"
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table"
+import {Dialog, DialogContent, DialogHeader, DialogTitle} from "@/components/ui/dialog"
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form"
+import {Input} from "@/components/ui/input"
+import {Textarea} from "@/components/ui/textarea"
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
+import {Checkbox} from "@/components/ui/checkbox"
+import {useToast} from "@/components/ui/use-toast"
+import {useForm} from 'react-hook-form'
+import {zodResolver} from '@hookform/resolvers/zod'
 import * as z from 'zod'
+import {eventSchema} from "@/schema/event-schema.ts";
+import Header from "@/components/header.tsx";
 
 // Define the Event type
 type Event = {
@@ -31,15 +33,6 @@ type EventType = {
     name: string
 }
 
-// Define the form schema
-const formSchema = z.object({
-    name: z.string().min(1, "Name is required"),
-    description: z.string().min(1, "Description is required"),
-    typeId: z.number().min(1, "Event type is required"),
-    priority: z.number().min(1, "Priority is required"),
-    published: z.boolean(),
-})
-
 export default function Dashboard() {
     const [events, setEvents] = useState<Event[]>([])
     const [eventTypes, setEventTypes] = useState<EventType[]>([])
@@ -47,10 +40,10 @@ export default function Dashboard() {
     const [totalPages, setTotalPages] = useState(1)
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [editingEvent, setEditingEvent] = useState<Event | null>(null)
-    const { toast } = useToast()
+    const {toast} = useToast()
 
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<z.infer<typeof eventSchema>>({
+        resolver: zodResolver(eventSchema),
         defaultValues: {
             name: "",
             description: "",
@@ -80,29 +73,29 @@ export default function Dashboard() {
         setEventTypes(data)
     }
 
-    const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const onSubmit = async (values: z.infer<typeof eventSchema>) => {
         try {
             if (editingEvent) {
                 // Update existing event
                 await fetch(`/api/events/${editingEvent.id}`, {
                     method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(values),
                 })
-                toast({ title: "Event updated successfully" })
+                toast({title: "Event updated successfully"})
             } else {
                 // Create new event
                 await fetch('/api/events', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(values),
                 })
-                toast({ title: "Event created successfully" })
+                toast({title: "Event created successfully"})
             }
             setIsDialogOpen(false)
             fetchEvents()
         } catch (error) {
-            toast({ title: "Error", description: "An error occurred while saving the event", variant: "destructive" })
+            toast({title: "Error", description: "An error occurred while saving the event", variant: "destructive"})
         }
     }
 
@@ -121,11 +114,15 @@ export default function Dashboard() {
     const handleDelete = async (id: number) => {
         if (confirm("Are you sure you want to delete this event?")) {
             try {
-                await fetch(`/api/events/${id}`, { method: 'DELETE' })
-                toast({ title: "Event deleted successfully" })
+                await fetch(`/api/events/${id}`, {method: 'DELETE'})
+                toast({title: "Event deleted successfully"})
                 fetchEvents()
             } catch (error) {
-                toast({ title: "Error", description: "An error occurred while deleting the event", variant: "destructive" })
+                toast({
+                    title: "Error",
+                    description: "An error occurred while deleting the event",
+                    variant: "destructive"
+                })
             }
         }
     }
@@ -133,10 +130,15 @@ export default function Dashboard() {
     return (
         <div className="min-h-screen bg-black text-green-400 p-4 font-mono">
             <div className="container mx-auto">
+                <Header/>
                 <h1 className="text-4xl font-bold mb-4 text-center animate-pulse">Event Arcade</h1>
                 <div className="border-4 border-green-400 p-8 rounded-lg shadow-lg shadow-green-400/50">
                     <Button
-                        onClick={() => { setEditingEvent(null); form.reset(); setIsDialogOpen(true); }}
+                        onClick={() => {
+                            setEditingEvent(null);
+                            form.reset();
+                            setIsDialogOpen(true);
+                        }}
                         className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-none border-2 border-white mb-4"
                     >
                         Insert Coin to Create Event
@@ -212,68 +214,72 @@ export default function Dashboard() {
                                     <FormField
                                         control={form.control}
                                         name="name"
-                                        render={({ field }) => (
+                                        render={({field}) => (
                                             <FormItem>
                                                 <FormLabel>Name</FormLabel>
                                                 <FormControl>
-                                                    <Input {...field} className="bg-green-900 text-white border-2 border-green-400" />
+                                                    <Input {...field} className="bg-green-900 text-white border-2 border-green-400"/>
                                                 </FormControl>
-                                                <FormMessage />
+                                                <FormMessage/>
                                             </FormItem>
                                         )}
                                     />
                                     <FormField
                                         control={form.control}
                                         name="description"
-                                        render={({ field }) => (
+                                        render={({field}) => (
                                             <FormItem>
                                                 <FormLabel>Description</FormLabel>
                                                 <FormControl>
-                                                    <Textarea {...field} className="bg-green-900 text-white border-2 border-green-400" />
+                                                    <Textarea {...field} className="bg-green-900 text-white border-2 border-green-400"/>
                                                 </FormControl>
-                                                <FormMessage />
+                                                <FormMessage/>
                                             </FormItem>
                                         )}
                                     />
                                     <FormField
                                         control={form.control}
                                         name="typeId"
-                                        render={({ field }) => (
+                                        render={({field}) => (
                                             <FormItem>
                                                 <FormLabel>Event Type</FormLabel>
-                                                <Select onValueChange={(value) => field.onChange(parseInt(value))} defaultValue={field.value.toString()}>
+                                                <Select onValueChange={(value) => field.onChange(parseInt(value))}
+                                                        defaultValue={field.value.toString()}>
                                                     <FormControl>
                                                         <SelectTrigger className="bg-green-900 text-white border-2 border-green-400">
-                                                            <SelectValue placeholder="Select an event type" />
+                                                            <SelectValue placeholder="Select an event type"/>
                                                         </SelectTrigger>
                                                     </FormControl>
                                                     <SelectContent className="bg-green-900 text-white border-2 border-green-400">
                                                         {eventTypes.map((type) => (
-                                                            <SelectItem key={type.id} value={type.id.toString()}>{type.name}</SelectItem>
+                                                            <SelectItem key={type.id}
+                                                                        value={type.id.toString()}>{type.name}</SelectItem>
                                                         ))}
                                                     </SelectContent>
                                                 </Select>
-                                                <FormMessage />
+                                                <FormMessage/>
                                             </FormItem>
                                         )}
                                     />
                                     <FormField
                                         control={form.control}
                                         name="priority"
-                                        render={({ field }) => (
+                                        render={({field}) => (
                                             <FormItem>
                                                 <FormLabel>Priority</FormLabel>
                                                 <FormControl>
-                                                    <Input type="number" {...field} onChange={(e) => field.onChange(parseInt(e.target.value))} className="bg-green-900 text-white border-2 border-green-400" />
+                                                    <Input type="number" {...field}
+                                                           onChange={(e) => field.onChange(parseInt(e.target.value))}
+                                                           className="bg-green-900 text-white border-2 border-green-400"/>
                                                 </FormControl>
-                                                <FormMessage />
+                                                <FormMessage/>
                                             </FormItem>
                                         )}
                                     />
                                     <FormField
                                         control={form.control}
                                         name="published"
-                                        render={({ field }) => (
+                                        render={({field}) => (
                                             <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                                                 <FormControl>
                                                     <Checkbox
@@ -290,7 +296,8 @@ export default function Dashboard() {
                                             </FormItem>
                                         )}
                                     />
-                                    <Button type="submit" className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-none border-2 border-white">
+                                    <Button type="submit"
+                                            className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-none border-2 border-white">
                                         Save High Score
                                     </Button>
                                 </form>

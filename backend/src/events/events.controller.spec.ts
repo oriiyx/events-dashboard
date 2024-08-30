@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EventsController } from './events.controller';
 import { EventsService } from './events.service';
-import {PrismaService} from "../prisma.service";
+import { PrismaService } from '../prisma.service';
 
 describe('EventsController', () => {
   let controller: EventsController;
