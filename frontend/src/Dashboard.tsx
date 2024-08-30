@@ -11,21 +11,9 @@ import {useToast} from "@/components/ui/use-toast"
 import {useForm} from 'react-hook-form'
 import {zodResolver} from '@hookform/resolvers/zod'
 import * as z from 'zod'
-import {eventSchema} from "@/schema/event-schema.ts";
+import {Event, eventSchema} from "@/schema/event-schema.ts";
 import Header from "@/components/header.tsx";
-
-// Define the Event type
-type Event = {
-    id: number
-    name: string
-    description: string
-    typeId: number
-    priority: number
-    published: boolean
-    userId: number | null
-    createdAt: string
-    updatedAt: string
-}
+import {apiFetchEvents} from "@/lib/api.ts";
 
 // Define the EventType type
 type EventType = {
@@ -54,23 +42,24 @@ export default function Dashboard() {
     })
 
     useEffect(() => {
+        console.log('fetching events')
         fetchEvents()
         fetchEventTypes()
     }, [currentPage])
 
     const fetchEvents = async () => {
         // Replace this with your actual API call
-        const response = await fetch(`http://localhost:3000/events?page=${currentPage}&limit=50`)
-        const data = await response.json()
-        setEvents(data.events)
-        setTotalPages(data.totalPages)
+        const data = await apiFetchEvents(currentPage);
+        console.log(data)
+        setEvents(data)
+        setTotalPages(1)
     }
 
     const fetchEventTypes = async () => {
         // Replace this with your actual API call
-        const response = await fetch('/api/event-types')
-        const data = await response.json()
-        setEventTypes(data)
+        // const response = await fetch('/api/event-types')
+        // const data = await response.json()
+        // setEventTypes(data)
     }
 
     const onSubmit = async (values: z.infer<typeof eventSchema>) => {
@@ -128,41 +117,45 @@ export default function Dashboard() {
     }
 
     return (
-        <div className="min-h-screen bg-black text-green-400 p-4 font-mono">
+        <div className="min-h-screen bg-black text-green-500 p-4 font-mono">
             <div className="container mx-auto">
                 <Header/>
-                <h1 className="text-4xl font-bold mb-4 text-center animate-pulse">Event Arcade</h1>
-                <div className="border-4 border-green-400 p-8 rounded-lg shadow-lg shadow-green-400/50">
-                    <Button
-                        onClick={() => {
-                            setEditingEvent(null);
-                            form.reset();
-                            setIsDialogOpen(true);
-                        }}
-                        className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-none border-2 border-white mb-4"
-                    >
-                        Insert Coin to Create Event
-                    </Button>
+                <div className="bg-green-500 w-full p-2 mb-5">
+                    <h1 className="text-xl font-bold text-left text-black">Events</h1>
+                </div>
+                <div className="border-4 border-green-500 p-4 shadow-lg shadow-green-500/50">
+                    <div className="flex justify-end p-2">
+                        <Button
+                            onClick={() => {
+                                setEditingEvent(null);
+                                form.reset();
+                                setIsDialogOpen(true);
+                            }}
+                            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-none border-2 border-white mb-4"
+                        >
+                            Create Event
+                        </Button>
+                    </div>
 
                     <div className="overflow-x-auto">
                         <Table className="w-full border-separate border-spacing-2">
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead className="bg-green-800 text-white px-2 py-1">Name</TableHead>
-                                    <TableHead className="bg-green-800 text-white px-2 py-1">Type</TableHead>
-                                    <TableHead className="bg-green-800 text-white px-2 py-1">Priority</TableHead>
-                                    <TableHead className="bg-green-800 text-white px-2 py-1">Published</TableHead>
-                                    <TableHead className="bg-green-800 text-white px-2 py-1">Actions</TableHead>
+                                    <TableHead className="bg-green-600 text-white px-2 py-1">Name</TableHead>
+                                    <TableHead className="bg-green-600 text-white px-2 py-1">Type</TableHead>
+                                    <TableHead className="bg-green-600 text-white px-2 py-1">Priority</TableHead>
+                                    <TableHead className="bg-green-600 text-white px-2 py-1">Published</TableHead>
+                                    <TableHead className="bg-green-600 text-white px-2 py-1">Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {events.map((event) => (
                                     <TableRow key={event.id} className="bg-black hover:bg-green-900">
-                                        <TableCell className="border border-green-400 px-2 py-1">{event.name}</TableCell>
-                                        <TableCell className="border border-green-400 px-2 py-1">{eventTypes.find(t => t.id === event.typeId)?.name}</TableCell>
-                                        <TableCell className="border border-green-400 px-2 py-1">{event.priority}</TableCell>
-                                        <TableCell className="border border-green-400 px-2 py-1">{event.published ? 'Yes' : 'No'}</TableCell>
-                                        <TableCell className="border border-green-400 px-2 py-1">
+                                        <TableCell className="border border-green-500 px-2 py-1">{event.name}</TableCell>
+                                        <TableCell className="border border-green-500 px-2 py-1">{eventTypes.find(t => t.id === event.typeId)?.name}</TableCell>
+                                        <TableCell className="border border-green-500 px-2 py-1">{event.priority}</TableCell>
+                                        <TableCell className="border border-green-500 px-2 py-1">{event.published ? 'Yes' : 'No'}</TableCell>
+                                        <TableCell className="border border-green-500 px-2 py-1">
                                             <Button
                                                 variant="outline"
                                                 size="sm"
@@ -186,7 +179,7 @@ export default function Dashboard() {
                         </Table>
                     </div>
 
-                    <div className="flex justify-between items-center mt-4">
+                    <div className="flex justify-between items-center mt-4 p-2">
                         <Button
                             onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                             disabled={currentPage === 1}
@@ -205,7 +198,7 @@ export default function Dashboard() {
                     </div>
 
                     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                        <DialogContent className="bg-black border-4 border-green-400 text-green-400">
+                        <DialogContent className="bg-black border-4 border-green-500 text-green-500">
                             <DialogHeader>
                                 <DialogTitle className="text-2xl font-bold text-center">{editingEvent ? 'Edit Event' : 'Create New Event'}</DialogTitle>
                             </DialogHeader>
@@ -218,7 +211,7 @@ export default function Dashboard() {
                                             <FormItem>
                                                 <FormLabel>Name</FormLabel>
                                                 <FormControl>
-                                                    <Input {...field} className="bg-green-900 text-white border-2 border-green-400"/>
+                                                    <Input {...field} className="bg-green-900 text-white border-2 border-green-500"/>
                                                 </FormControl>
                                                 <FormMessage/>
                                             </FormItem>
@@ -231,7 +224,7 @@ export default function Dashboard() {
                                             <FormItem>
                                                 <FormLabel>Description</FormLabel>
                                                 <FormControl>
-                                                    <Textarea {...field} className="bg-green-900 text-white border-2 border-green-400"/>
+                                                    <Textarea {...field} className="bg-green-900 text-white border-2 border-green-500"/>
                                                 </FormControl>
                                                 <FormMessage/>
                                             </FormItem>
@@ -246,11 +239,11 @@ export default function Dashboard() {
                                                 <Select onValueChange={(value) => field.onChange(parseInt(value))}
                                                         defaultValue={field.value.toString()}>
                                                     <FormControl>
-                                                        <SelectTrigger className="bg-green-900 text-white border-2 border-green-400">
+                                                        <SelectTrigger className="bg-green-900 text-white border-2 border-green-500">
                                                             <SelectValue placeholder="Select an event type"/>
                                                         </SelectTrigger>
                                                     </FormControl>
-                                                    <SelectContent className="bg-green-900 text-white border-2 border-green-400">
+                                                    <SelectContent className="bg-green-900 text-white border-2 border-green-500">
                                                         {eventTypes.map((type) => (
                                                             <SelectItem key={type.id}
                                                                         value={type.id.toString()}>{type.name}</SelectItem>
@@ -270,7 +263,7 @@ export default function Dashboard() {
                                                 <FormControl>
                                                     <Input type="number" {...field}
                                                            onChange={(e) => field.onChange(parseInt(e.target.value))}
-                                                           className="bg-green-900 text-white border-2 border-green-400"/>
+                                                           className="bg-green-900 text-white border-2 border-green-500"/>
                                                 </FormControl>
                                                 <FormMessage/>
                                             </FormItem>
@@ -285,7 +278,7 @@ export default function Dashboard() {
                                                     <Checkbox
                                                         checked={field.value}
                                                         onCheckedChange={field.onChange}
-                                                        className="bg-green-900 border-2 border-green-400"
+                                                        className="bg-green-900 border-2 border-green-500"
                                                     />
                                                 </FormControl>
                                                 <div className="space-y-1 leading-none">
@@ -297,7 +290,7 @@ export default function Dashboard() {
                                         )}
                                     />
                                     <Button type="submit"
-                                            className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-none border-2 border-white">
+                                            className="bg-green-600 hover:bg-green-800 text-white font-bold py-2 px-4 rounded-none border-2 border-white">
                                         Save High Score
                                     </Button>
                                 </form>

@@ -39,8 +39,10 @@ export default function Login() {
         <div className="min-h-screen bg-black text-green-400 p-4 font-mono">
             <Header/>
             <div className="container mx-auto max-w-md">
-                <h1 className="text-4xl font-bold mb-8 text-center animate-pulse">Login</h1>
-                <div className="border-4 border-green-400 p-8 rounded-lg shadow-lg shadow-green-400/50">
+                <div className="bg-green-500 w-full p-2 mb-5">
+                    <h1 className="text-xl font-bold text-left text-black">Login</h1>
+                </div>
+                <div className="border-4 border-green-400 p-8 rounded-none shadow-lg shadow-green-400/50">
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                             <FormField
@@ -72,7 +74,7 @@ export default function Login() {
                             />
                             {error && <div className="text-red-500">{error}</div>}
                             <Button type="submit"
-                                    className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-none border-2 border-white">
+                                    className="w-full bg-green-600 hover:bg-green-800 text-white font-bold py-2 px-4 rounded-none border-2 border-white">
                                 Login
                             </Button>
                         </form>

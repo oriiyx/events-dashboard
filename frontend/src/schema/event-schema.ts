@@ -2,7 +2,7 @@
 import {z} from 'zod';
 
 export const eventSchema = z.object({
-    id: z.number().optional(), // ID might be optional for new events
+    id: z.number(), // ID might be optional for new events
     name: z.string().min(1, "Name is required"),
     description: z.string().min(1, "Description is required"),
     typeId: z.number().min(1, "Event type is required"),
