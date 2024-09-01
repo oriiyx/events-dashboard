@@ -1,7 +1,7 @@
 class CreateEventDto {
   name: string;
   description: string;
-  type: string;
+  typeId: number;
   priority: number;
   published: boolean;
   userId: number;
@@ -10,7 +10,7 @@ class CreateEventDto {
 class PatchEventDto {
   name: string;
   description: string;
-  type: string;
+  typeId: number;
   priority: number;
   published: boolean;
   userId: number;

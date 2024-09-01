@@ -1,6 +1,7 @@
 import api from './interceptors'; // Import the configured axios instance
 import {Event, eventSchema, EventType, eventTypeSchema} from '../schema/event-schema';
-import * as z from 'zod'; // Ensure Zod is imported
+import * as z from 'zod';
+import {getAllowAds} from "@/lib/auth.ts"; // Ensure Zod is imported
 
 export async function apiFetchEvents(page: number = 1): Promise<Event[]> {
     try {
@@ -12,10 +13,53 @@ export async function apiFetchEvents(page: number = 1): Promise<Event[]> {
     }
 }
 
-export async function apiFetchEventTypes(): Promise<EventType[]> {
+export async function apiCreateEvent(event: Event): Promise<void> {
+    try {
+        const response = await api.post(`/events/create`, event); // Use `api` instead of `axios`
+        if (response.status !== 201) {
+            console.error('Failed to create event:', response);
+            throw new Error('Failed to create event');
+        }
+    } catch (error) {
+        console.error('Failed to fetch events:', error);
+        throw new Error('Failed to fetch events');
+    }
+}
+
+export async function apiUpdateEvent(id: number, event: Event): Promise<void> {
+    try {
+        const response = await api.patch(`/events/${id}`, event); // Use `api` instead of `axios`
+        if (response.status !== 200) {
+            console.error('Failed to update event:', response);
+            throw new Error('Failed to update event');
+        }
+    } catch (error) {
+        console.error('Failed to update events:', error);
+        throw new Error('Failed to update events');
+    }
+}
+
+export async function apiFetchEvent(id: number): Promise<Event> {
+    try {
+        const response = await api.get(`/events/${id}`); // Use `api` instead of `axios`
+        return eventSchema.parse(response.data);
+    } catch (error) {
+        console.error('Failed to fetch event:', error);
+        throw new Error('Failed to fetch event');
+    }
+}
+
+export async function apiFetchEventTypes(editingEvent: boolean = false): Promise<EventType[]> {
     try {
         const response = await api.get(`/events/types`); // Use `api` instead of `axios`
-        return z.array(eventTypeSchema).parse(response.data);
+        const data = z.array(eventTypeSchema).parse(response.data);
+        if (editingEvent) {
+            const isUserAllowedToSeeAds = getAllowAds();
+            if(isUserAllowedToSeeAds === "false") {
+                return data.filter(eventType => eventType.name !== 'ADS');
+            }
+        }
+        return data;
     } catch (error) {
         console.error('Failed to fetch event types:', error);
         throw new Error('Failed to fetch event types');
