@@ -10,6 +10,7 @@ import {
 import { EventsService } from './events.service';
 import { Event } from '@prisma/client';
 import { CreateEventDto, PatchEventDto } from './dto/events.dto';
+import { EventType } from '.prisma/client';
 
 @Controller('events')
 export class EventsController {
@@ -24,6 +25,12 @@ export class EventsController {
   async findAll(): Promise<Event[]> {
     console.log('findAll');
     return this.eventsService.events({});
+  }
+
+  @Get('types')
+  async findAllTypes(): Promise<EventType[]> {
+    console.log('findAllEventType');
+    return this.eventsService.eventTypes();
   }
 
   @Get(':id')

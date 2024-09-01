@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { Event, Prisma } from '@prisma/client';
 import { CreateEventDto, PatchEventDto } from './dto/events.dto';
+import { EventType } from '.prisma/client';
 
 @Injectable()
 export class EventsService {
@@ -30,6 +31,10 @@ export class EventsService {
       where,
       orderBy,
     });
+  }
+
+  async eventTypes(): Promise<EventType[]> {
+    return this.prisma.eventType.findMany();
   }
 
   async createEvent(data: CreateEventDto): Promise<Event> {

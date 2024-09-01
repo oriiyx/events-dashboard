@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react'
 import {Button} from "@/components/ui/button"
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table"
-import {Dialog, DialogContent, DialogHeader, DialogTitle} from "@/components/ui/dialog"
+import {Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle} from "@/components/ui/dialog"
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form"
 import {Input} from "@/components/ui/input"
 import {Textarea} from "@/components/ui/textarea"
@@ -11,15 +11,10 @@ import {useToast} from "@/components/ui/use-toast"
 import {useForm} from 'react-hook-form'
 import {zodResolver} from '@hookform/resolvers/zod'
 import * as z from 'zod'
-import {Event, eventSchema} from "@/schema/event-schema.ts";
+import {Event, eventSchema, EventType} from "@/schema/event-schema.ts";
 import Header from "@/components/header.tsx";
-import {apiFetchEvents} from "@/lib/api.ts";
+import {apiFetchEvents, apiFetchEventTypes} from "@/lib/api.ts";
 
-// Define the EventType type
-type EventType = {
-    id: number
-    name: string
-}
 
 export default function Dashboard() {
     const [events, setEvents] = useState<Event[]>([])
@@ -56,10 +51,9 @@ export default function Dashboard() {
     }
 
     const fetchEventTypes = async () => {
-        // Replace this with your actual API call
-        // const response = await fetch('/api/event-types')
-        // const data = await response.json()
-        // setEventTypes(data)
+        const data = await apiFetchEventTypes();
+        console.log(data)
+        setEventTypes(data)
     }
 
     const onSubmit = async (values: z.infer<typeof eventSchema>) => {
@@ -121,7 +115,7 @@ export default function Dashboard() {
             <div className="container mx-auto">
                 <Header/>
                 <div className="bg-green-500 w-full p-2 mb-5">
-                    <h1 className="text-xl font-bold text-left text-black">Events</h1>
+                    <h1 className="text-xl font-bold text-left text-black">Dashboard</h1>
                 </div>
                 <div className="border-4 border-green-500 p-4 shadow-lg shadow-green-500/50">
                     <div className="flex justify-end p-2">
@@ -179,7 +173,7 @@ export default function Dashboard() {
                         </Table>
                     </div>
 
-                    <div className="flex justify-between items-center mt-4 p-2">
+                    <div className="flex md:flex-row flex-col md:gap-0 gap-4 justify-between items-center mt-4 p-2">
                         <Button
                             onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                             disabled={currentPage === 1}
@@ -289,10 +283,17 @@ export default function Dashboard() {
                                             </FormItem>
                                         )}
                                     />
-                                    <Button type="submit"
-                                            className="bg-green-600 hover:bg-green-800 text-white font-bold py-2 px-4 rounded-none border-2 border-white">
-                                        Save High Score
-                                    </Button>
+                                    <DialogFooter>
+                                        <DialogClose asChild>
+                                            <Button className="bg-red-600 hover:bg-red-800 text-white font-bold py-2 px-4 rounded-none border-2 border-white">
+                                                Cancel
+                                            </Button>
+                                        </DialogClose>
+                                        <Button type="submit"
+                                                className="bg-green-600 hover:bg-green-800 text-white font-bold py-2 px-4 rounded-none border-2 border-white">
+                                            Save
+                                        </Button>
+                                    </DialogFooter>
                                 </form>
                             </Form>
                         </DialogContent>

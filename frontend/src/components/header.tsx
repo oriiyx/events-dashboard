@@ -21,10 +21,8 @@ export default function Header() {
 
 
     return (
-        <header className="bg-black border-b-4 border-green-400 p-4 mb-4">
-            <nav className="container mx-auto flex justify-between items-center">
-                <Link to="/" className="text-green-400 text-2xl font-bold">Event Dashboard</Link>
-                <div className="space-x-4">
+        <header className="bg-black border-b-4 border-green-400 mb-4">
+            <nav className="flex justify-end items-center pb-4 gap-4">
                     {!loggedIn &&
                         <>
                             <Link to="/register"
@@ -43,7 +41,6 @@ export default function Header() {
                                     className="text-green-400 hover:text-green-300 px-3 py-2 rounded-none border-2 border-green-400 hover:bg-green-900 transition-colors">Logout</Button>
                         </>
                     }
-                </div>
             </nav>
         </header>
     )

@@ -52,7 +52,7 @@ export default function Register() {
                                     <FormItem>
                                         <FormLabel>Email</FormLabel>
                                         <FormControl>
-                                            <Input {...field} className="bg-green-900 text-white border-2 border-green-400" />
+                                            <Input {...field} className="bg-green-900 text-white" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -65,14 +65,14 @@ export default function Register() {
                                     <FormItem>
                                         <FormLabel>Password</FormLabel>
                                         <FormControl>
-                                            <Input type="password" {...field} className="bg-green-900 text-white border-2 border-green-400" />
+                                            <Input type="password" {...field} className="bg-green-900 text-white" />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
                             {error && <div className="text-red-500">{error}</div>}
-                            <Button type="submit" className="w-full bg-green-600 hover:bg-green-800 text-white font-bold py-2 px-4 rounded-none border-2 border-white">
+                            <Button type="submit" className="w-full bg-green-600 hover:bg-green-800 text-white font-bold py-2 px-4 rounded-none">
                                 Register Player
                             </Button>
                         </form>
