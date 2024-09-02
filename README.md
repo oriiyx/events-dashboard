@@ -1,5 +1,19 @@
 # Ekipa7 dashboard
 
+## Run the project
+You need the following software installed on your local machine: **Docker**
+After that you need to copy /backend/.env.sample to /backend/.env
+Then you can run the following command in the root directory of the project:
+
+```bash
+docker-compose up -d --build
+```
+This will create backend that is available on localhost port 4000 and frontend that is available on localhost port 80.
+
+Visit http://localhost to see the frontend.
+
+## Development Journey
+
 Huh... Writing an application in a new framework within a 7 days window?
 I guess we'll have to accept the challenge.
 The business logic is mostly CRUD with authentication so at least there isn't any research besides the framework that I have to do.
@@ -71,3 +85,28 @@ Additionally, I added published information - so that when user creates the new 
 
 After coming back to the project after talking to Primož, I added authentication - following the nestjs documentation mostly - not funny buisness - I wanted to have JWT token generated.
 When I created a new user I wanted to have password hashed - I used bcrypt for that.
+
+... Well since I had a lot of personal hardships I wasnt really in the mood of writing additional data when writing the application...
+I did try...
+I was given a direction to focus on the frontend - but... what is the thing you have to focus on with frontend?
+I would say the design, UX, SEO (if its needed), performance, accessibility, responsiveness, user flow etc
+
+Since this is a dashboard - you loose SEO, responsiveness focus since it's not so important - people using it usually work on desktops - so I focused on design, UX, performance, accessibility and user flow.
+
+I wanted a simple, minimal design - since I am a shit designer I went with what I like - if you played Alien Isolation game I think you'll find some relations with that game and the dashboard. UX and flow are pretty standard CRUD app.
+
+Since I didn't have a lot of time I missed something's that I would implement if I had more time... Pagination, sorting, filtering, refreshing JWT token, logging structure... so much to do with so little time :)
+
+Frontend I used React + vite + typescript + shadcn for components + react-router-dom + nginx to add ability to navigate directly inside SPA app with zod to do some runtime checks.
+
+Prettier and eslint - eslint shows some warning and errors... but It's nothing major I think - some things are from codegen stuff - one err is my own... god I hate js sometimes :P ability to shoot yourself in the foot is endless - you really need to be experienced and skilled to be able to write normal code... but hey... it is what it is :)
+
+I didn't have any bigger issues - I didn't over abstract - I like following the https://andrewbrookins.com/technology/the-rule-of-three/ (good read, would recommend).
+
+I tried to catch as many errors but... javascript is really a bad language when it comes to error handling...the language doesn't tell you anything most of the time... modern software eh?
+
+Backend I wrote test mostly to just generate data for myself - but when I ran it - I tested most of my code - but not everything.
+
+I think it shows some signs of what type of developer I am when it comes to JS land - I really like to keep it simple as possible - I think NestJS is a step in that direction, but it includes a million things... Almost impossible to know everything in a few days of learning, but I think I did an okay job... could be better of course :)
+
+
