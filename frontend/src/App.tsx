@@ -7,6 +7,7 @@ import PrivateRoute from "@/PrivateRoute.tsx";
 import NotFound from "@/404.tsx";
 import PublicRoute from "@/PublicRoute.tsx";
 import CreateEventForm from "@/CreateEventForm.tsx";
+import { Toaster } from '@/components/ui/toaster.tsx';
 
 function App() {
     return (
@@ -25,6 +26,7 @@ function App() {
                 </Route>
                 <Route path="*" element={<NotFound/>}/>
             </Routes>
+            <Toaster />
         </Router>
     );
 }
