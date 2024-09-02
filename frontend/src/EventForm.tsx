@@ -64,7 +64,6 @@ export default function EventForm() {
     }
 
     const onSubmit = async (values: z.infer<typeof eventSchema>) => {
-        window.console.log(values)
         try {
             const userId = getUserId();
             values.userId = Number(userId);

@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+    frontend:
+        build:
+            context: ./frontend
+            args:
+                VITE_BACKEND_PUBLIC_URL: http://localhost:4000
+                VITE_BACKEND_INTERNAL_URL: http://localhost:4000
+        container_name: 'frontend'
+        ports:
+            - '80:80'
+        environment:
+            VITE_BACKEND_PUBLIC_URL: http://localhost:4000
+            VITE_BACKEND_INTERNAL_URL: http://localhost:4000
+        networks:
+            - default
+
+    backend:
+        build:
+            context: ./backend
+        container_name: 'backend'
+        ports:
+            - '4000:3000'
+        volumes:
+            - ./backend/prisma:/app/prisma # Ensure SQLite DB persistence
+        networks:
+            - default
+
+networks:
+    default:

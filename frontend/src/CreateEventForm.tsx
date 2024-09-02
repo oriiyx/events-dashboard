@@ -16,7 +16,6 @@ import { apiCreateEvent, apiFetchEventTypes } from '@/lib/api.ts';
 import { handleAxiosError } from '@/lib/error-handler.ts';
 import { getUserId } from '@/lib/auth.ts';
 
-console.log('CreateEventForm component is rendering');
 export default function CreateEventForm() {
   const navigate = useNavigate();
   const { toast } = useToast();

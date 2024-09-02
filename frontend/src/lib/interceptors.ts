@@ -1,10 +1,11 @@
 // src/apiService.ts
 import axios from 'axios';
 import { getToken, logout } from './auth';
+import { BACKEND_INTERNAL_URL } from '@/lib/env.ts';
 
 // Create an instance of axios with the base URL
 const api = axios.create({
-  baseURL: 'http://localhost:3000',
+  baseURL: BACKEND_INTERNAL_URL,
 });
 
 // Add a request interceptor to include the JWT token in headers
