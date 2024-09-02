@@ -6,6 +6,7 @@ import EventForm from './EventForm';
 import PrivateRoute from "@/PrivateRoute.tsx";
 import NotFound from "@/404.tsx";
 import PublicRoute from "@/PublicRoute.tsx";
+import CreateEventForm from "@/CreateEventForm.tsx";
 
 function App() {
     return (
@@ -19,7 +20,7 @@ function App() {
                 <Route element={<PrivateRoute/>}>
                     <Route path="/" element={<Dashboard/>}/>
                     <Route path="/dashboard" element={<Dashboard/>}/>
-                    <Route path="/events/new" element={<EventForm />}/>
+                    <Route path="/events/new" element={<CreateEventForm />}/>
                     <Route path="/events/:id/edit" element={<EventForm />}/>
                 </Route>
                 <Route path="*" element={<NotFound/>}/>

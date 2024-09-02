@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react'
-import {useNavigate, useParams} from 'react-router-dom'
+import {useNavigate} from 'react-router-dom'
 import {useForm} from 'react-hook-form'
 import {zodResolver} from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -11,24 +11,23 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
 import {Checkbox} from "@/components/ui/checkbox"
 import {useToast} from "@/components/ui/use-toast"
 import Header from "@/components/header"
-import {eventSchema, EventType} from "@/schema/event-schema"
-import {apiCreateEvent, apiFetchEvent, apiFetchEventTypes, apiUpdateEvent} from "@/lib/api.ts";
+import {createEventSchema, EventType} from "@/schema/event-schema"
+import {apiCreateEvent, apiFetchEventTypes} from "@/lib/api.ts";
 import {handleAxiosError} from "@/lib/error-handler.ts";
 import {getUserId} from "@/lib/auth.ts";
 
-export default function EventForm() {
-    const {id} = useParams<{ id: string }>()
+export default function CreateEventForm() {
     const navigate = useNavigate()
     const {toast} = useToast()
     const [eventTypes, setEventTypes] = useState<EventType[]>([])
 
-    const form = useForm<z.infer<typeof eventSchema>>({
-        resolver: zodResolver(eventSchema),
+    const form = useForm<z.infer<typeof createEventSchema>>({
+        resolver: zodResolver(createEventSchema),
         defaultValues: {
             name: "",
             description: "",
             typeId: 0,
-            priority: 1,
+            priority: 0,
             published: false,
         },
     })
@@ -36,12 +35,6 @@ export default function EventForm() {
     useEffect(() => {
         fetchEventTypes().then();
     }, []);
-
-    useEffect(() => {
-        if (id) {
-            fetchEventTypes().then(() => fetchEvent(parseInt(id)).then());
-        }
-    }, [id])
 
     const fetchEventTypes = async () => {
         try {
@@ -53,29 +46,13 @@ export default function EventForm() {
         }
     }
 
-    const fetchEvent = async (eventId: number) => {
-        try {
-            const event = await apiFetchEvent(eventId)
-            form.reset(event)
-        } catch (error) {
-            handleAxiosError(error, 'Failed to fetch event')
-            toast({title: "Error", description: "Failed to fetch event", variant: "destructive"})
-        }
-    }
-
-    const onSubmit = async (values: z.infer<typeof eventSchema>) => {
-        window.console.log(values)
+    const onSubmit = async (values: z.infer<typeof createEventSchema>) => {
+        console.log(values)
         try {
             const userId = getUserId();
             values.userId = Number(userId);
-
-            if (id) {
-                await apiUpdateEvent(parseInt(id), values)
-                toast({title: "Event updated successfully"})
-            } else {
-                await apiCreateEvent(values)
-                toast({title: "Event created successfully"})
-            }
+            await apiCreateEvent(values)
+            toast({title: "Event created successfully"})
             navigate('/dashboard')
         } catch (error) {
             handleAxiosError(error, 'An error occurred while saving the event')
@@ -88,7 +65,7 @@ export default function EventForm() {
             <div className="container mx-auto">
                 <Header/>
                 <div className="bg-green-500 w-full p-2 mb-5">
-                    <h1 className="text-xl font-bold text-left text-black">{id ? 'Edit Event' : 'Create New Event'}</h1>
+                    <h1 className="text-xl font-bold text-left text-black">Create New Event</h1>
                 </div>
                 <div className="border-4 border-green-500 p-8 rounded-none shadow-lg shadow-green-500/50">
                     <Form {...form}>
@@ -193,7 +170,7 @@ export default function EventForm() {
                                     type="submit"
                                     className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-none"
                                 >
-                                    {id ? 'Update' : 'Create'} Event
+                                    Create Event
                                 </Button>
                             </div>
                         </form>

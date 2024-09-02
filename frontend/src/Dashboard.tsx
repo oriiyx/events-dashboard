@@ -6,6 +6,9 @@ import {Event, EventType} from "@/schema/event-schema.ts";
 import Header from "@/components/header.tsx";
 import {apiFetchEvents, apiFetchEventTypes} from "@/lib/api.ts";
 import {Link} from "react-router-dom";
+import {customLogger} from "@/lib/logger.ts";
+import api from "@/lib/interceptors.ts";
+import {handleAxiosError} from "@/lib/error-handler.ts";
 
 
 export default function Dashboard() {
@@ -35,10 +38,11 @@ export default function Dashboard() {
     const handleDelete = async (id: number) => {
         if (confirm("Are you sure you want to delete this event?")) {
             try {
-                await fetch(`/api/events/${id}`, {method: 'DELETE'})
+                await api.delete(`/events/${id}`)
                 toast({title: "Event deleted successfully"})
                 fetchEvents().then();
             } catch (error) {
+                handleAxiosError(error, 'Failed to delete event');
                 toast({
                     title: "Error",
                     description: "An error occurred while deleting the event",
